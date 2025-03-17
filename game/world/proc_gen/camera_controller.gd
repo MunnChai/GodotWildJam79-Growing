@@ -2,6 +2,7 @@ extends Camera2D
 
 # Camera move constants
 const MOUSE_DRAG_STRENGTH: float = 50
+const MOVE_SPEED = 250 
 
 # Camera zoom constants
 const FIXED_ZOOM_SIZES: Array[float] = [
@@ -32,6 +33,21 @@ func _process(delta: float) -> void:
 	
 	if Input.is_action_just_released("zoom_cam_out"):
 		zoom_cam_out(delta)
+	
+	var velocity = Vector2()
+	if Input.is_action_pressed("move_cam_up"):
+		velocity += Vector2(0, -1)
+	 
+	if Input.is_action_pressed("move_cam_down"):
+		velocity += Vector2(0, 1)
+	
+	if Input.is_action_pressed("move_cam_right"):
+		velocity += Vector2(1, 0)
+	
+	if Input.is_action_pressed("move_cam_left"):
+		velocity += Vector2(-1, 0)
+	
+	position += velocity * MOVE_SPEED / FIXED_ZOOM_SIZES[current_zoom_index] * delta 
 	
 	prev_mouse_pos = get_global_mouse_position()
 
