@@ -188,6 +188,10 @@ func generate_rivers(river_tiles: Array[Vector2i]) -> void:
 		river_tiles.erase(map_coords)
 	
 	set_cells_terrain_connect(river_tiles, 0, 1)
+	
+	for map_coords in river_tiles:
+		var tile_data: TileData = get_cell_tile_data(map_coords)
+		tile_data.set_custom_data("biome", TILE_TYPE.WATER)
 
 
 func generate_cities(city_coords: Array[Vector2i]):
