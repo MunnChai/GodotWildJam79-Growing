@@ -23,15 +23,24 @@ const TILE_TYPE_VARIATIONS: Dictionary[TILE_TYPE, int] = {
 	TILE_TYPE.WATER: 1,
 }
 
+const BUILDING = preload("res://world/city_buildings/scenes/building.tscn")
+const FACTORY = preload("res://world/city_buildings/scenes/factory.tscn")
+
 const SOURCE_ID: int = 0
 const BIOME_FALLOFF = 2
 
+# Generating city tiles
 const MIN_CITIES: int = 3
 const MAX_CITIES: int = 5
 const CITY_DISTANCE: int = Constants.MAP_SIZE.x / 2.5
 const DRUNKARD_LIFETIME: int = 15
 const NUM_DRUNKARDS: int = 10
 
+# Generating buildings inside of cities
+const NUM_FACTORIES = 9
+const BUILDING_FREQUENCY: float = 0.15
+
+# For generating roads
 const TARGETED_DRUNKARD_LIFETIME: int = 60
 const TARGETED_NUM_DRUNKARDS: int = 1
 const TARGETED_DRUNKARD_INTELLIGENCE: float = 0.85
@@ -86,7 +95,9 @@ func generate_map() -> void:
 	generate_roads(city_coords)
 	
 	# Generate cities on top of roads (pretty important, otherwise roads will "cut through" cities)
-	generate_cities(city_coords)
+	var city_tiles: Array[Vector2i] = generate_cities(city_coords)
+	
+	fill_cities(city_tiles)
 	
 	# Create spawn area of grass
 	generate_spawn()
@@ -195,9 +206,63 @@ func generate_rivers(river_tiles: Array[Vector2i]) -> void:
 		tile_data.set_custom_data("biome", TILE_TYPE.WATER)
 
 
-func generate_cities(city_coords: Array[Vector2i]):
+func generate_cities(city_coords: Array[Vector2i]) -> Array[Vector2i]:
+	var city_tiles: Array[Vector2i]
+	
 	for map_coords in city_coords:
-		generate_city(map_coords)
+		city_tiles.append_array(generate_city(map_coords))
+	
+	var remove_duplicates: Dictionary[Vector2i, int]
+	for tile in city_tiles:
+		remove_duplicates[tile] = 0
+	
+	return remove_duplicates.keys()
+
+
+func fill_cities(city_tiles: Array[Vector2i]) -> void:
+	var structure_map: BuildingMap = get_tree().get_first_node_in_group("structure_map")
+	
+	# Add buildings
+	var buildings: Array[Structure]
+	for tile: Vector2i in city_tiles:
+		var rand = randf()
+		
+		if (rand < BUILDING_FREQUENCY):
+			
+			var building: CityBuilding = BUILDING.instantiate()
+			structure_map.add_structure(tile, building)
+			buildings.append(building)
+	
+	# Check if there are less buildings than factories
+	var true_num_factories = NUM_FACTORIES
+	if (buildings.size() < NUM_FACTORIES):
+		true_num_factories = buildings.size()
+	
+	# Add factories
+	var curr_num_factories = 0
+	while (curr_num_factories < true_num_factories):
+		
+		for building: Structure in buildings:
+			if (building is Factory):
+				continue
+			
+			if (curr_num_factories >= true_num_factories):
+				break
+			
+			var rand = randf()
+			if (rand < 0.5):
+				var pos = building.pos
+				# Replace building on map
+				structure_map.remove_structure(pos)
+				
+				var factory: Factory = FACTORY.instantiate()
+				structure_map.add_structure(pos, factory)
+				
+				# Replace building in array
+				buildings.erase(building)
+				
+				curr_num_factories += 1
+
 
 
 func generate_roads(city_coords: Array[Vector2i]) -> void:
@@ -217,9 +282,13 @@ func build_road(city_i: Vector2i, city_j: Vector2i) -> void:
 		walk_drunkard_targeted(city_i, city_j, TILE_TYPE.DIRT)
 
 
-func generate_city(map_coords: Vector2i) -> void:
+func generate_city(map_coords: Vector2i) -> Array[Vector2i]:
+	var city_tiles: Array[Vector2i]
+	
 	for i in range(0, NUM_DRUNKARDS):
-		walk_drunkard(map_coords, TILE_TYPE.CITY)
+		city_tiles.append_array(walk_drunkard(map_coords, TILE_TYPE.CITY))
+	
+	return city_tiles
 
 func generate_spawn() -> void:
 	var origin: Vector2i = Vector2i(Constants.MAP_SIZE / 2)
@@ -231,7 +300,8 @@ func generate_spawn() -> void:
 
 
 
-func walk_drunkard(map_coords: Vector2i, tile_type: TILE_TYPE, irreplaceable_tiles: Array[TILE_TYPE] = []):
+func walk_drunkard(map_coords: Vector2i, tile_type: TILE_TYPE, irreplaceable_tiles: Array[TILE_TYPE] = []) -> Array[Vector2i]:
+	var tiles_walked: Array[Vector2i]
 	var drunkard_life: int = DRUNKARD_LIFETIME
 	var current_coord: Vector2i = map_coords
 	while (drunkard_life > 0):
@@ -274,7 +344,11 @@ func walk_drunkard(map_coords: Vector2i, tile_type: TILE_TYPE, irreplaceable_til
 		tile_data = get_cell_tile_data(current_coord)
 		tile_data.set_custom_data("biome", tile_type)
 		
+		tiles_walked.append(current_coord)
+		
 		drunkard_life -= 1
+	
+	return tiles_walked
 
 
 

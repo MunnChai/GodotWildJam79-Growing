@@ -14,6 +14,7 @@ func add_structure(map_coords: Vector2i, structure: Structure) -> bool:
 		return false
 	
 	structure.position = map_to_local(map_coords)
+	structure.pos = map_coords
 	
 	tile_scene_map[map_coords] = structure
 	add_child(structure)

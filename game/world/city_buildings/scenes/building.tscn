@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://w6fgqsschku6"]
+
+[ext_resource type="Texture2D" uid="uid://biqrko5gffb5j" path="res://world/proc_gen/structure_map/City_Buildings_1.png" id="1_nca2w"]
+[ext_resource type="Script" uid="uid://caheb8xmaa6ta" path="res://world/city_buildings/scripts/city_building.gd" id="1_rn21y"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rn21y"]
+atlas = ExtResource("1_nca2w")
+region = Rect2(0, 16, 32, 40)
+
+[node name="Building" type="Node2D"]
+script = ExtResource("1_rn21y")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -12)
+texture = SubResource("AtlasTexture_rn21y")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
