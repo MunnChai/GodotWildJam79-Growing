@@ -39,6 +39,7 @@ const NUM_DRUNKARDS: int = 10
 # Generating buildings inside of cities
 const NUM_FACTORIES = 9
 const BUILDING_FREQUENCY: float = 0.15
+const NUM_CITY_ROADS = 2
 
 # For generating roads
 const TARGETED_DRUNKARD_LIFETIME: int = 60
@@ -216,7 +217,9 @@ func generate_cities(city_coords: Array[Vector2i]) -> Array[Vector2i]:
 	for tile in city_tiles:
 		remove_duplicates[tile] = 0
 	
-	return remove_duplicates.keys()
+	city_tiles = remove_duplicates.keys()
+	
+	return city_tiles
 
 
 func fill_cities(city_tiles: Array[Vector2i]) -> void:
@@ -288,7 +291,52 @@ func generate_city(map_coords: Vector2i) -> Array[Vector2i]:
 	for i in range(0, NUM_DRUNKARDS):
 		city_tiles.append_array(walk_drunkard(map_coords, TILE_TYPE.CITY))
 	
+	#create_city_roads(city_tiles)
+	
 	return city_tiles
+
+func create_city_roads(city_tiles: Array[Vector2i]):
+	
+	var x_min: float = INF
+	var x_max: float = -INF
+	
+	var y_min: float = INF
+	var y_max: float = -INF
+	
+	# Get min/max of x and y coordinates
+	for tile: Vector2i in city_tiles:
+		if (tile.x < x_min):
+			x_min = tile.x
+		
+		if (tile.x > x_max):
+			x_max = tile.x
+		
+		if (tile.y < y_min):
+			y_min = tile.y
+		
+		if (tile.y > y_max):
+			y_max = tile.y
+	
+	var rand_pos: Vector2i = Vector2i(
+		randi_range(x_min, x_max),
+		randi_range(y_min, y_max)
+	)
+	var irreplaceable: Array[TILE_TYPE] = [TILE_TYPE.DIRT, TILE_TYPE.GRASS, TILE_TYPE.WATER]
+	
+	var stride = randi_range(3, 5)
+	for i: int in range(0, NUM_CITY_ROADS - 1):
+		var tiles = walk_drunkard(rand_pos, TILE_TYPE.CITY, irreplaceable, stride)
+		var tile_map: Dictionary[Vector2i, int]
+		for tile in tiles:
+			tile_map[tile] = 0
+		tiles = tile_map.keys()
+		print(tiles)
+		
+		set_cells_terrain_connect(tiles, 0, 1)
+		
+		for tile in tiles:
+			var tile_data: TileData = get_cell_tile_data(tile)
+			tile_data.set_custom_data("biome", TILE_TYPE.CITY)
 
 func generate_spawn() -> void:
 	var origin: Vector2i = Vector2i(Constants.MAP_SIZE / 2)
@@ -300,7 +348,7 @@ func generate_spawn() -> void:
 
 
 
-func walk_drunkard(map_coords: Vector2i, tile_type: TILE_TYPE, irreplaceable_tiles: Array[TILE_TYPE] = []) -> Array[Vector2i]:
+func walk_drunkard(map_coords: Vector2i, tile_type: TILE_TYPE, irreplaceable_tiles: Array[TILE_TYPE] = [], stride: int = 1) -> Array[Vector2i]:
 	var tiles_walked: Array[Vector2i]
 	var drunkard_life: int = DRUNKARD_LIFETIME
 	var current_coord: Vector2i = map_coords
@@ -319,34 +367,41 @@ func walk_drunkard(map_coords: Vector2i, tile_type: TILE_TYPE, irreplaceable_til
 			3:
 				direction = Vector2i.RIGHT
 		
-		current_coord += direction
-		
-		if (current_coord.x >= Constants.MAP_SIZE.x || current_coord.y >= Constants.MAP_SIZE.y):
-			drunkard_life -= 1
-			continue
-		if (current_coord.x < 0 || current_coord.y < 0):
-			drunkard_life -= 1
-			continue
-		
-		var tile_data: TileData = get_cell_tile_data(current_coord)
-		
-		if (tile_data != null):
-			var current_tile: TILE_TYPE = tile_data.get_custom_data("biome")
+		var i = 0
+		while (i < stride):
+			current_coord += direction
 			
-			if (irreplaceable_tiles.find(current_tile) > -1):
+			if (current_coord.x >= Constants.MAP_SIZE.x || current_coord.y >= Constants.MAP_SIZE.y):
 				drunkard_life -= 1
+				i += 1
 				continue
-		
-		
-		# Set to City Tile
-		var atlas_coords: Vector2i = TILE_ATLAS_COORDS[tile_type]
-		set_cell(current_coord, SOURCE_ID, atlas_coords, 0)
-		tile_data = get_cell_tile_data(current_coord)
-		tile_data.set_custom_data("biome", tile_type)
-		
-		tiles_walked.append(current_coord)
-		
-		drunkard_life -= 1
+			if (current_coord.x < 0 || current_coord.y < 0):
+				drunkard_life -= 1
+				i += 1
+				continue
+			
+			var tile_data: TileData = get_cell_tile_data(current_coord)
+			
+			if (tile_data != null):
+				var current_tile: TILE_TYPE = tile_data.get_custom_data("biome")
+				
+				if (irreplaceable_tiles.find(current_tile) > -1):
+					drunkard_life -= 1
+					i += 1
+					continue
+			
+			
+			# Set to City Tile
+			var atlas_coords: Vector2i = TILE_ATLAS_COORDS[tile_type]
+			set_cell(current_coord, SOURCE_ID, atlas_coords, 0)
+			tile_data = get_cell_tile_data(current_coord)
+			tile_data.set_custom_data("biome", tile_type)
+			
+			tiles_walked.append(current_coord)
+			
+			i += 1
+			
+			drunkard_life -= 1
 	
 	return tiles_walked
 
@@ -412,6 +467,8 @@ func randomize_tiles() -> void:
 			
 			var tile_data: TileData = get_cell_tile_data(map_coords)
 			var biome: int = tile_data.get_custom_data("biome")
+			if (biome == TILE_TYPE.CITY):
+				return
 			var scaled_value: float = randf() * (TILE_TYPE_VARIATIONS[biome] - 1)
 			var modifier: int = floor(scaled_value)
 			
