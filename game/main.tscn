@@ -3,6 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://csdqqfvopxl7j" path="res://world/proc_gen/tile_maps.tscn" id="1_0xm2m"]
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+[ext_resource type="Script" uid="uid://clltcgyhrsp74" path="res://main.gd" id="1_lquwl"]
+>>>>>>> Stashed changes
 =======
 [ext_resource type="Script" uid="uid://clltcgyhrsp74" path="res://main.gd" id="1_lquwl"]
 >>>>>>> Stashed changes

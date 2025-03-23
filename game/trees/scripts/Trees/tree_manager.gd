@@ -51,7 +51,10 @@ func _ready():
 	#test()
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 	#res += Vector3(10000000, 0, 100)

@@ -20,6 +20,10 @@ func _on_trees_pressed() -> void:
 	set_visibility(true, false, false)
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+	SfxManager.play_sound_effect("ui_pages")
+>>>>>>> Stashed changes
 =======
 	SfxManager.play_sound_effect("ui_pages")
 >>>>>>> Stashed changes
@@ -32,6 +36,10 @@ func _on_technology_pressed() -> void:
 	set_visibility(false, true, false)
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+	SfxManager.play_sound_effect("ui_pages")
+>>>>>>> Stashed changes
 =======
 	SfxManager.play_sound_effect("ui_pages")
 >>>>>>> Stashed changes
@@ -44,6 +52,10 @@ func _on_settings_pressed() -> void:
 	set_visibility(false, false, true)
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+	SfxManager.play_sound_effect("ui_pages")
+>>>>>>> Stashed changes
 =======
 	SfxManager.play_sound_effect("ui_pages")
 >>>>>>> Stashed changes
@@ -59,6 +71,10 @@ func _on_close_menu_pressed() -> void:
 		animation_player.play_backwards("menu_appear")
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+		SfxManager.play_sound_effect("ui_pages")
+>>>>>>> Stashed changes
 =======
 		SfxManager.play_sound_effect("ui_pages")
 >>>>>>> Stashed changes
@@ -71,6 +87,10 @@ func _on_close_menu_pressed() -> void:
 		animation_player.play("menu_appear")
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+		SfxManager.play_sound_effect("ui_pages")
+>>>>>>> Stashed changes
 =======
 		SfxManager.play_sound_effect("ui_pages")
 >>>>>>> Stashed changes
