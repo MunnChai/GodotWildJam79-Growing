@@ -53,9 +53,6 @@ func _process(delta):
 	update(delta)
 
 func _input(_event: InputEvent) -> void:
-	if (TreeManager.is_mother_dead()):
-		# if mother died
-		return
 	if (Input.is_action_pressed("lmb")):
 		var map_coords: Vector2i = structure_map.local_to_map(structure_map.get_mouse_coords())
 		
