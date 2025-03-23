@@ -19,8 +19,8 @@ var spawning_interval_tracker: float = 0
 var current_wave = 0
 var day_tracker = 1
 
-var min_enemies_per_wave: int = 4
-var max_enemies_per_wave: int = 6
+var min_enemies_per_wave: int = 1
+var max_enemies_per_wave: int = 2
 
 var current_enemies: Array[Enemy]
 

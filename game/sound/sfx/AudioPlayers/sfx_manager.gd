@@ -10,6 +10,19 @@ var speedle_die: AudioStreamPlayer
 const SPEEDLE_DIE = preload("res://sound/sfx/AudioPlayers/speedle_die.tscn")
 var tree_remove: AudioStreamPlayer
 const TREE_REMOVE = preload("res://sound/sfx/AudioPlayers/tree_remove.tscn")
+<<<<<<< Updated upstream
+=======
+var ui_fail: AudioStreamPlayer
+const UI_FAIL = preload("res://sound/sfx/AudioPlayers/ui_fail.tscn")
+var ui_click: AudioStreamPlayer
+const UI_CLICK = preload("res://sound/sfx/AudioPlayers/ui_click.tscn")
+var concrete_break: AudioStreamPlayer
+const CONCRETE_BREAK = preload("res://sound/sfx/AudioPlayers/concrete_break.tscn")
+var ui_pages: AudioStreamPlayer
+const UI_PAGES = preload("res://sound/sfx/AudioPlayers/ui_pages.tscn")
+var silk_spitter_die: AudioStreamPlayer
+const SILK_SPITTER_DIE = preload("res://sound/sfx/AudioPlayers/silk_spitter_die.tscn")
+>>>>>>> Stashed changes
 
 var SFX_DICT: Dictionary[String, AudioStreamPlayer]  
 
@@ -39,6 +52,33 @@ func _ready() -> void:
 	add_child(tree_remove)
 	SFX_DICT["tree_remove"] = tree_remove
 	
+<<<<<<< Updated upstream
+=======
+	#ui_fail sfx
+	ui_fail = UI_FAIL.instantiate()
+	add_child(ui_fail)
+	SFX_DICT["ui_fail"] = ui_fail
+	
+	#ui_click sfx
+	ui_click = UI_CLICK.instantiate()
+	add_child(ui_click)
+	SFX_DICT["ui_click"] = ui_click
+	
+	#concrete break sfx
+	concrete_break = CONCRETE_BREAK.instantiate()
+	add_child(concrete_break)
+	SFX_DICT["concrete_break"] = concrete_break
+	
+	# ui_pages sfx
+	ui_pages = UI_PAGES.instantiate()
+	add_child(ui_pages)
+	SFX_DICT["ui_pages"] = ui_pages
+	
+	# ui_pages sfx
+	silk_spitter_die = SILK_SPITTER_DIE.instantiate()
+	add_child(ui_pages)
+	SFX_DICT["silk_spitter_die"] = silk_spitter_die
+>>>>>>> Stashed changes
 
 func play_sound_effect(name: String) -> void:
 	var sound_effect: AudioStreamPlayer = SFX_DICT[name]

@@ -49,6 +49,22 @@ func _ready():
 	res = Vector3(0, 0, 0)
 	forest_count = 0
 	#test()
+<<<<<<< Updated upstream
+=======
+	#res += Vector3(10000000, 0, 100)
+	
+	forests.clear()
+	forest_map.clear()
+	tree_map.clear()
+	
+	fog_map = get_tree().get_nodes_in_group("fog_map")[0]
+	structure_map = get_tree().get_nodes_in_group("structure_map")[0]
+	terrain_map = get_tree().get_nodes_in_group("terrain_map")[0]
+	
+	EnemyManager.start_game()
+	
+	await get_tree().process_frame
+>>>>>>> Stashed changes
 	
 	call_deferred("add_tree", 0, Global.MAP_SIZE / 2, false)
 

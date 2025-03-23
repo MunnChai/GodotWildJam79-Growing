@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://46jhoiak7peh"]
+
+[ext_resource type="AudioStream" uid="uid://bxuk8te388kws" path="res://sound/sfx/silkspitter_attack.wav" id="1_eceu1"]
+
+[node name="SilkSpitterDie" type="AudioStreamPlayer"]
+stream = ExtResource("1_eceu1")
