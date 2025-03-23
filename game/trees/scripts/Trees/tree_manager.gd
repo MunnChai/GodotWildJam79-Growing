@@ -50,7 +50,10 @@ func _ready():
 	forest_count = 0
 	#test()
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 	#res += Vector3(10000000, 0, 100)
 	
 	forests.clear()

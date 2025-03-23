@@ -22,6 +22,9 @@ var ui_pages: AudioStreamPlayer
 const UI_PAGES = preload("res://sound/sfx/AudioPlayers/ui_pages.tscn")
 var silk_spitter_die: AudioStreamPlayer
 const SILK_SPITTER_DIE = preload("res://sound/sfx/AudioPlayers/silk_spitter_die.tscn")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 var SFX_DICT: Dictionary[String, AudioStreamPlayer]  
@@ -78,6 +81,9 @@ func _ready() -> void:
 	silk_spitter_die = SILK_SPITTER_DIE.instantiate()
 	add_child(ui_pages)
 	SFX_DICT["silk_spitter_die"] = silk_spitter_die
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 func play_sound_effect(name: String) -> void:
