@@ -35,9 +35,11 @@ const TREE_DICT: Dictionary[int, PackedScene] = {
 var forests: Dictionary[int, Forest] # {id, Forest}
 var forest_map: Dictionary[Vector2i, int] # {pos, id}
 var tree_map: Dictionary[Vector2i, Twee]
+var tech_trees: Dictionary[Vector2i, TechTree] # {pos, TechTree}
 var res: Vector3 # Vec3(N, water, sun)
 var gain: Vector3
 var forest_count: int
+var tech_point: int
 
 # currently selected tree from ui
 var selected_tree_species: int = 1
@@ -45,6 +47,7 @@ var selected_tree_species: int = 1
 func _ready():
 	res = Vector3(0, 0, 0)
 	forest_count = 0
+	tech_point = 0
 	#test()
 	
 	call_deferred("add_tree", 0, Global.MAP_SIZE / 2, false)
@@ -96,6 +99,10 @@ func update(delta: float):
 		
 		if (f.empty):
 			remove_forest(key)  
+	for tech in tech_trees.keys():
+		var t: TechTree = tech_trees[tech]
+		if t.check_tech_point():
+			tech_unlock()
 	
 	res += gain * delta
 	res.y = max(0, res.y)
@@ -107,7 +114,7 @@ func update(delta: float):
 func add_tree(type: int, p: Vector2i, enforce_reachable: bool = true) -> int:
 	var tree: Twee
 	tree = TREE_DICT[type].instantiate()
-	
+		
 	if (forest_map.has(p)):
 		return 1
 	if (!enough_n(tree.tree_stat.cost_to_purchase)):
@@ -124,11 +131,13 @@ func add_tree(type: int, p: Vector2i, enforce_reachable: bool = true) -> int:
 	var forest: Forest = forests[f_id]
 	forest.add_tree(p, tree)
 	tree_map[p] = tree
+	if (type == TreeType.TECH_TREE):
+		# also add to tech_trees if it's a tech tree
+		tech_trees[p] = tree
 	
 	fog_map.remove_fog_around(p)
 	
 	SfxManager.play_sound_effect("tree_plant")
-	print(tree_map)
 	
 	# call structure_map to add it on screen TODO: weird 
 	structure_map.add_structure(p, tree)
@@ -150,6 +159,11 @@ func remove_tree(p: Vector2i) -> bool:
 	f.remove_tree(p)
 	# assume remove_tree will free object correctly
 	forest_map.erase(p)
+	
+	if (tech_trees.has(p)):
+		tech_trees.erase(p)
+		tech_point = max(0, tech_point - 1)
+		print(tech_point)
 	
 	forest_check(p, f_id)
 	structure_map.remove_structure(p)
@@ -177,24 +191,24 @@ func remove_forest(id: int):
 ## upgrade the tree at given p
 ## return: 0 -> succesfful, 1 -> no tree at p, 2 -> insufficient resources
 ##         3 -> secondary tree exists at p
-func upgrade_tree(p: Vector2i) -> int:
-	if (!forest_map.has(p)):
-		return 1
-	
-	if (!enough_n(DefaultTree.COST2)):
-		#print("not enough N")
-		return 2
-		
-	var f_id = forest_map[p]
-	var forest: Forest = forests[f_id]
-	if (forest.upgrade(p)):
-		# assume Forest.upgrade() erase and replace correctly
-		res.x -= DefaultTree.COST2
-		## ui stuff tbd
-		#var object: BuildingMap = get_tree().get_first_node_in_group("structure_map")
-		#object.upgrade_cell(p)
-		return 0
-	else: return 3
+#func upgrade_tree(p: Vector2i) -> int:
+	#if (!forest_map.has(p)):
+		#return 1
+	#
+	#if (!enough_n(DefaultTree.COST2)):
+		##print("not enough N")
+		#return 2
+		#
+	#var f_id = forest_map[p]
+	#var forest: Forest = forests[f_id]
+	#if (forest.upgrade(p)):
+		## assume Forest.upgrade() erase and replace correctly
+		#res.x -= DefaultTree.COST2
+		### ui stuff tbd
+		##var object: BuildingMap = get_tree().get_first_node_in_group("structure_map")
+		##object.upgrade_cell(p)
+		#return 0
+	#else: return 3
 
 
 ## finds the corresponding forest id for given p
@@ -481,3 +495,7 @@ func find_neighbours(p: Vector2i) -> Array[Vector2i]:
 
 func is_mother_dead() -> bool:
 	return (!tree_map.has(Global.ORIGIN) or tree_map[Global.ORIGIN].died)
+
+func tech_unlock():
+	tech_point = min(3, tech_point + 1)
+	print(tech_point)

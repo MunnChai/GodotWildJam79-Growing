@@ -1,9 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://ba7kjg1310k3c"]
+[gd_scene load_steps=8 format=3 uid="uid://ba7kjg1310k3c"]
 
 [ext_resource type="Script" uid="uid://e4356lpy73tp" path="res://trees/scripts/Trees/TechTree.gd" id="1_l8d8v"]
 [ext_resource type="Resource" uid="uid://cak861fnyx3xa" path="res://trees/stats/TechTreeStat.tres" id="2_hmfl0"]
 [ext_resource type="AnimationLibrary" uid="uid://b75x83ikhqgye" path="res://trees/tree_animations.res" id="2_ndkoj"]
 [ext_resource type="Texture2D" uid="uid://c246f21ad4hjn" path="res://trees/sheets/tree_square_sheet.png" id="3_tnjkq"]
+[ext_resource type="Shader" path="res://trees/tree_damage.gdshader" id="4_engai"]
+[ext_resource type="Texture2D" uid="uid://ccshvxurb1pd2" path="res://trees/scripts/Trees/Tree_Tech_Flywheel_Animated_1.png" id="4_tnjkq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a1dlf"]
+shader = ExtResource("4_engai")
+shader_parameter/flash_amount = 1.0
+shader_parameter/shake_amount = 10.0
+shader_parameter/alpha = 1.0
+shader_parameter/pos = Vector2(0, 0)
+shader_parameter/dehydrated = false
+shader_parameter/uv_y_offset = 0.4
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+shader_parameter/fps = 0.0
+shader_parameter/frame_count = 0
 
 [node name="TechTree" type="Node2D"]
 script = ExtResource("1_l8d8v")
@@ -12,6 +27,9 @@ sheets = Array[Texture2D]([ExtResource("3_tnjkq")])
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 unique_name_in_owner = true
+material = SubResource("ShaderMaterial_a1dlf")
+texture = ExtResource("4_tnjkq")
+hframes = 8
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true

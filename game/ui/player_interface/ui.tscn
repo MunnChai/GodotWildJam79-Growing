@@ -26,6 +26,8 @@ mouse_filter = 2
 script = ExtResource("5_anucx")
 
 [node name="Menu" parent="." instance=ExtResource("1_gvw8e")]
+offset_top = 648.0
+offset_bottom = 152.0
 
 [node name="ResourcesUI" parent="." instance=ExtResource("2_dfe3o")]
 anchors_preset = 0

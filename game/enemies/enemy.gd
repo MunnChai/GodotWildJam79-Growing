@@ -203,7 +203,7 @@ func find_path_to_tree(tree: Twee) -> Array:
 		
 		# We reached the target!
 		if (get_taxicab_distance(current_pos, target_pos) <= attack_range):
-			print("Total tiles visited during enemy pathfinding: ", visited.size())
+			#print("Total tiles visited during enemy pathfinding: ", visited.size())
 			return current_path
 		
 		# Check if 4 adjacent tiles are valid
